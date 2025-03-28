@@ -90,7 +90,7 @@ Potential Issues:
 // set CUDA_PATH variable to wherever your CUDA Toolkit is installed
 export CUDA_PATH=/usr/local/cuda-12.4/
 
-// May or may not require setting LD_LIBRARY_PATH to gcc 14, similar to this, or whereever gcc14 is installed
+// May or may not require setting LD_LIBRARY_PATH to gcc 14, similar to this, or wherever gcc14 is installed
 export LD_LIBRARY_PATH=~/gcc-14.1.0/x86_64-linux-gnu/libstdc++-v3/src/.libs:$LD_LIBRARY_PATH
 
 // run from workspace root
