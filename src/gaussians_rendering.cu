@@ -498,7 +498,7 @@ void kernel_stageSplats(
 
 	// WIP: SHs not yet robust under model and splat transformations
 	constexpr int updateOverXFrames = 10;
-	// if(splatIndex % updateOverXFrames == args.uniforms.frameCount % updateOverXFrames)
+	if(splatIndex % updateOverXFrames == args.uniforms.frameCount % updateOverXFrames)
 	// if(false)
 	if(model.shDegree > 0 ){
 		// if(splatIndex == 0) printf("model.numSHCoefficients: %d \n", model.numSHCoefficients);
