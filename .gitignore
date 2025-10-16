@@ -94,3 +94,10 @@ splatmodels_benchmark_campus_close/
 splatmodels_benchmark_campus_far/
 splatmodels_statue_1/
 splatmodels_statue2/
+splatmodels_benchmark_berlin/*
+splatmodels_demo/*
+splatmodels_gardentable/*
+splatmodels_benchmark/*
+splatmodels_gardentable_up/*
+splatmodels_benchmark_kinuta/*
+splatmodels_benchmark_playroom/*
