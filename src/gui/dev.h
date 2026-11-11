@@ -45,6 +45,8 @@ void makeKernels(){
 						int maxThreadsPerBlock = 0;
 						int registersPerThread;
 						int sharedMemory;
+						// With lazy module loading (default since CUDA 12.2), functions must be loaded before querying attributes
+						CURuntime::check(cuFuncLoad(function), false);
 						CURuntime::check(cuFuncGetAttribute(&maxThreadsPerBlock, CU_FUNC_ATTRIBUTE_MAX_THREADS_PER_BLOCK, function), false);
 						CURuntime::check(cuFuncGetAttribute(&registersPerThread, CU_FUNC_ATTRIBUTE_NUM_REGS, function), false);
 						CURuntime::check(cuFuncGetAttribute(&sharedMemory, CU_FUNC_ATTRIBUTE_SHARED_SIZE_BYTES, function), false);
