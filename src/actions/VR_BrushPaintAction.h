@@ -153,12 +153,6 @@ struct VR_BrushPaintAction : public InputAction{
 
 		Controller right = ovr->getRightController();
 
-		if(right.triggered()){
-			beginUndoable();
-		}else if(right.untriggered()){
-			endUndoable();
-		}
-
 		const float MIN_STEPDISTANCE = 3.0f;
 		// do a brush step every <stepdistance> meters
 		float brushRadius = settings.vr_brushSize;

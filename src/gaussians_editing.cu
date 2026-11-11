@@ -590,8 +590,7 @@ void kernel_select_vr(
 		0.0,  0.0, 0.0, 1.0
 	);
 
-	bool intersectionMode = BRUSH_INTERSECTION_CENTER;
-	intersectionMode = BRUSH_INTERSECTION_BORDER;
+	uint32_t intersectionMode = BRUSH_INTERSECTION_BORDER;
 
 	vec3 d_scale;
 	quat d_rotation;
@@ -764,9 +763,7 @@ void kernel_select_sphere(
 
 	if(index >= model.count) return;
 
-	bool intersectionMode = BRUSH_INTERSECTION_CENTER;
-	intersectionMode = BRUSH_INTERSECTION_BORDER;
-	intersectionMode = BRUSH_INTERSECTION_CENTER;
+	uint32_t intersectionMode = BRUSH_INTERSECTION_CENTER;
 
 	// spherePos = {0.0f, 0.0f, 0.0f};
 	// radius = 1.0f;

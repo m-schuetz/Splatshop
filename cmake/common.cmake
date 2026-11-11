@@ -41,7 +41,8 @@ if (WIN32)
 		target_include_directories(${TARGET_NAME} PRIVATE CUDAToolkit_INCLUDE_DIRS)
 		target_link_libraries(${TARGET_NAME}
 			CUDA::cuda_driver
-			CUDA::nvrtc)
+			CUDA::nvrtc
+			CUDA::nvJitLink)
 	endfunction()
 
 elseif (UNIX)
