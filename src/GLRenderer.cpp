@@ -99,8 +99,12 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 
 	// cout << "start button: " << button << ", action: " << action << ", mods: " << mods << endl;
 
+	// Only filter presses. WantCaptureMouse reflects the previous frame, so a press may reach
+	// the editor while the matching release is swallowed by ImGui (e.g. when clicking into the
+	// window while it was out of focus), leaving the button stuck down. See issue #9.
+	// Releases are therefore always forwarded.
 	ImGuiIO& io = ImGui::GetIO();
-	if(io.WantCaptureMouse){
+	if(io.WantCaptureMouse && action == GLFW_PRESS){
 		return;
 	}
 
@@ -185,6 +189,18 @@ void GLRenderer::init(){
 	glfwSetCursorPosCallback(window, cursor_position_callback);
 	glfwSetMouseButtonCallback(window, mouse_button_callback);
 	glfwSetScrollCallback(window, scroll_callback);
+
+	// Release any mouse buttons still held when the window loses focus,
+	// otherwise the release event may never arrive. See issue #9.
+	glfwSetWindowFocusCallback(window, [](GLFWwindow* window, int focused){
+		if(focused) return;
+
+		for(int button = 0; button < 3; button++){
+			if(Runtime::mouseButtons & (1 << button)){
+				mouse_button_callback(window, button, GLFW_RELEASE, 0);
+			}
+		}
+	});
 	//glfwSetDropCallback(window, drop_callback);
 
 	glfwSetDropCallback(window, [](GLFWwindow*, int count, const char **paths){
