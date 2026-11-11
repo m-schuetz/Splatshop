@@ -224,11 +224,17 @@ struct SpherePaintAction : public InputAction{
 
 	void paintBrushStep(float radius){
 		auto editor = SplatEditor::instance;
-		auto& settings = editor->settings;
 
 		if(editor->deviceState.hovered_depth < Infinity){
-			vec3 spherePos = editor->deviceState.hovered_pos;
-			
+			paintBrushStep(editor->deviceState.hovered_pos, radius);
+		}
+	}
+
+	void paintBrushStep(vec3 spherePos, float radius){
+		auto editor = SplatEditor::instance;
+		auto& settings = editor->settings;
+
+		{
 			int numTicks = 1;
 
 			editor->scene.process<SNSplats>([&](SNSplats* node) {
@@ -386,13 +392,30 @@ struct SpherePaintAction : public InputAction{
 					// println("dist_Ob:             {:.1f}", dist_Ob);
 					// println("stepdistance:        {:.1f}", stepdistance);
 
+					// Issue #6: hovered_pos is only available once per frame (at mouse pos b).
+					// Interpolate the 3D brush positions between the previous frame's hovered_pos (a)
+					// and the current one (b). If either is missing or there is a large depth jump
+					// (e.g. at an object's silhouette), interpolation would paint into empty space,
+					// so fall back to a single step at the current hovered_pos.
+					bool canInterpolate =
+						previousHoverDepth < Infinity &&
+						hoverDepth < Infinity &&
+						abs(hoverDepth - previousHoverDepth) < 0.2f * min(hoverDepth, previousHoverDepth);
+					float len_ab = length(ab);
+
 					vec2 lastBrushPos = O;
 					int c = 0;
 					for(float t = stepdistance; t < dist_Ob; t += stepdistance){
 						vec2 brushPos = O + t * dir_ab;
 
-						// workaround to #6, paint once per frame. 
-						if(c == 0) paintBrushStep(radius);
+						if(canInterpolate){
+							// fraction along a->b at which this step lies
+							float f = clamp((t - accumulatedDistance) / len_ab, 0.0f, 1.0f);
+							vec3 spherePos = mix(previousHoverPos, hoverPos, f);
+							paintBrushStep(spherePos, radius);
+						}else if(c == 0){
+							paintBrushStep(radius);
+						}
 
 						numStepsPainted++;
 
@@ -405,6 +428,10 @@ struct SpherePaintAction : public InputAction{
 				}
 			}
 		}
+
+		// Issue #6: remember this frame's hovered position to interpolate brush steps next frame
+		previousHoverPos = hoverPos;
+		previousHoverDepth = hoverDepth;
 
 		if(Runtime::measureTimings){
 			cuEventRecord(ce_end, 0);
